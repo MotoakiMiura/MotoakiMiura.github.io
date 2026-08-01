@@ -23,31 +23,38 @@
 
   <script>
     // FirebaseのURL（末尾は /status.json）
-    const FIREBASE_URL = "https://lock-state-visualizer-default-rtdb.firebaseio.com/status.json";
+    const FIREBASE_URL = "https://lock-state-visualizer-default-rtdb.firebaseio.com/status.json"
 
-    function updateStatus() {
-      fetch(FIREBASE_URL)
-        .then(res => res.json())
-        .then(data => {
-          if (!data) return;
-          const statusEl = document.getElementById('status');
-          document.getElementById('val').innerText = data.analogValue;
-          document.getElementById('time').innerText = new Date().toLocaleTimeString();
+    const THRESHOLD = 3500; 
 
-          if (data.isLocked) {
-            statusEl.innerText = "🔒 施錠中（消灯）";
-            statusEl.className = "status locked";
-          } else {
-            statusEl.innerText = "🔓 解錠中（点灯）";
-            statusEl.className = "status unlocked";
-          }
-        })
-        .catch(err => console.error("データ取得エラー:", err));
-    }
+  function updateStatus() {
+    fetch(FIREBASE_URL)
+      .then(res => res.json())
+      .then(data => {
+        if (!data) return;
+        const statusEl = document.getElementById('status');
+        const val = Number(data.analogValue); // アナログ数値を取得
 
-    // 2秒ごとに自動更新
-    setInterval(updateStatus, 2000);
-    updateStatus();
-  </script>
+        document.getElementById('val').innerText = val;
+        document.getElementById('time').innerText = new Date().toLocaleTimeString();
+
+        // ★数値から直接判定（暗い＝数値が大きい＝施錠中）
+        // ※もし「暗いときに数値が小さくなる」回路の場合は (val < THRESHOLD) に変更してください
+        const isLocked = (val > THRESHOLD);
+
+        if (isLocked) {
+          statusEl.innerText = "🔒 施錠中（消灯）";
+          statusEl.className = "status locked";
+        } else {
+          statusEl.innerText = "🔓 解錠中（点灯）";
+          statusEl.className = "status unlocked";
+        }
+      })
+      .catch(err => console.error("データ取得エラー:", err));
+  }
+
+  setInterval(updateStatus, 2000);
+  updateStatus();
+</script>
 </body>
 </html>
