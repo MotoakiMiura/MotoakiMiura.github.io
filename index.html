@@ -40,7 +40,7 @@
 
         // ★数値から直接判定（暗い＝数値が大きい＝施錠中）
         // ※もし「暗いときに数値が小さくなる」回路の場合は (val < THRESHOLD) に変更してください
-        const isLocked = (val > THRESHOLD);
+        const isLocked = (val < THRESHOLD);
 
         if (isLocked) {
           statusEl.innerText = "🔒 施錠中（消灯）";
