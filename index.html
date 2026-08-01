@@ -25,26 +25,18 @@
     // FirebaseのURL（末尾は /status.json）
     const FIREBASE_URL = "https://YOUR-PROJECT-ID-default-rtdb.firebaseio.com/status.json";
 
-    // ★ 点灯時と消灯時の「中間値」を設定してください（例: 1000）
-    const THRESHOLD = 1000;
-
     function updateStatus() {
       fetch(FIREBASE_URL)
         .then(res => res.json())
         .then(data => {
           if (!data) return;
           const statusEl = document.getElementById('status');
-          const val = Number(data.analogValue); // ESP32から送られてくる生の値
 
-          document.getElementById('val').innerText = val;
+          document.getElementById('val').innerText = data.analogValue;
           document.getElementById('time').innerText = new Date().toLocaleTimeString();
 
-          // ★ 判定ロジック
-          // 3.3V - CdS - GPIO - 2.2kΩ - GND の回路では、暗い（消灯）時に数値が小さくなります。
-          // 閾値（THRESHOLD）より数値が小さければ「施錠（消灯）」と判定します。
-          const isLocked = (val < THRESHOLD);
-
-          if (isLocked) {
+          // ESP32から判定済みで送られてくる data.isLocked (true / false) を使用
+          if (data.isLocked) {
             statusEl.innerText = "🔒 施錠中（消灯）";
             statusEl.className = "status locked";
           } else {
@@ -55,7 +47,7 @@
         .catch(err => console.error("データ取得エラー:", err));
     }
 
-    // 2秒ごとに画面の数値を更新
+    // 2秒ごとに更新
     setInterval(updateStatus, 2000);
     updateStatus();
   </script>
