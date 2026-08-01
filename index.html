@@ -8,8 +8,8 @@
     body { font-family: sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; color: #333; }
     .card { display: inline-block; padding: 30px; border-radius: 12px; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 80%; max-width: 400px; }
     .status { font-size: 2em; font-weight: bold; margin: 20px 0; padding: 15px 25px; border-radius: 8px; }
-    .locked { color: #1e7e34; background: #d4edda; }
-    .unlocked { color: #bd2130; background: #f8d7da; }
+    .unlocked { color: #1e7e34; background: #d4edda; }
+    .locked { color: #bd2130; background: #f8d7da; }
     .info { color: #666; font-size: 0.9em; }
   </style>
 </head>
@@ -45,10 +45,10 @@
           const isLocked = (val < THRESHOLD);
 
           if (isLocked) {
-            statusEl.innerText = "🔒 施錠中（消灯）";
+            statusEl.innerText = "🔒 施錠中";
             statusEl.className = "status locked";
           } else {
-            statusEl.innerText = "🔓 解錠中（点灯）";
+            statusEl.innerText = "🔓 解錠中";
             statusEl.className = "status unlocked";
           }
         })
